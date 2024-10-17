@@ -20,7 +20,7 @@ let db = [
 
 app.get('/', (c) => {
   const endpoints = [
-    { method: 'GET', path: '/', description: 'Get a list of all available endpoints' },
+    { method: 'GET', path: '/', description: 'Get a list of all available endpoints staging branch' },
     { method: 'GET', path: '/text', description: 'Get text message' },
     { method: 'GET', path: '/items', description: 'Get all items' },
     { method: 'GET', path: '/items/:id', description: 'Get a specific item by ID' },
