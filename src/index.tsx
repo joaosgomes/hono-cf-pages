@@ -76,6 +76,24 @@ app.delete('/items/:id', (c) => {
   }
 });
 
+app.get('/no-cache', (c) => {
+  c.header('Cache-Control', 'private, no-cache, max-age=0');
+  c.header('Pragma', 'no-cache');
+
+
+  return c.json({ message: 'This response is not cached' });
+});
+
+app.get('/no-cache-control', (c) => {
+  c.header('x-jgomes', '1');
+
+
+
+  return c.json({ message: 'This response does not have cache-control header' });
+});
+
+
+
 
 
 
