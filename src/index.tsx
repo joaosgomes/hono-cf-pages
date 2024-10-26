@@ -141,8 +141,7 @@ app.get('/custom-cache', (c) => {
   cacheControl = cacheControl.replace(/['"]/g, '').trim(); // Remove quotes and trim whitespace
 
   c.header('Cache-Control', cacheControl); // Set the Cache-Control header
-  c.header('Content-Type', 'application/javascript'); // Set content type to JS
-  return c.json({ message: `Cache-Control set to: ${cacheControl}` });
+  return c.text(`Cache-Control set to: ${cacheControl}`);
 });
 
 
