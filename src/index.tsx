@@ -113,7 +113,7 @@ app.get('/no-cache-control', (c) => {
 });
 
 
-app.get('/custom-cache', (c) => {
+/* app.get('/custom-cache', (c) => {
   let cacheControlValue = c.req.query('cacheControl');
 
   // Check if the value is wrapped in quotes and remove them
@@ -133,8 +133,16 @@ app.get('/custom-cache', (c) => {
   return c.json({ message: `Response with Cache-Control: ${processedValue}` });
 });
 
+ */
+app.get('/custom-cache', (c) => {
+  let cacheControl = c.req.query('cacheControl') || 'default-value'; // Get cacheControl query parameter
+  
+  // Sanitize input: remove unwanted characters if necessary
+  cacheControl = cacheControl.replace(/['"]/g, '').trim(); // Remove quotes and trim whitespace
 
-
+  c.header('Cache-Control', cacheControl); // Set the Cache-Control header
+  return c.json({ message: `Cache-Control set to: ${cacheControl}` });
+});
 
 
 
