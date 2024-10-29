@@ -30,6 +30,7 @@ app.get('/', (c) => {
   const baseUrl = `${url.protocol}//${url.host}`; // Construct the base URL
 
   const endpoints = [
+
     { method: 'GET', path: `${baseUrl}/`, description: 'Get a list of all available endpoints' },
     { method: 'GET', path: `${baseUrl}/text`, description: 'Get text message' },
     { method: 'GET', path: `${baseUrl}/items`, description: 'Get all items' },
