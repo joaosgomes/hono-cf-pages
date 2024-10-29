@@ -1,5 +1,11 @@
 import { Hono } from 'hono'
 import { renderer } from './renderer'
+//import fs from 'fs';
+import path from 'path';
+import fs from 'fs/promises'; // Ensure fs is imported from promises
+
+import { serveStatic } from '@hono/node-server/serve-static'
+
 
 const app = new Hono()
 
@@ -34,8 +40,8 @@ app.get('/', (c) => {
     { method: 'GET', path: `${baseUrl}/no-cache`, description: 'Endpoint with Header Cache-Control: private, no-cache, max-age=0, Pragma, no-cache' },
 
 
-    { 
-      method: 'GET', path: `${baseUrl}/custom-cache?`, description: 'Dynamically set the Cache-Control header for the response based on query parameters. Specify caching behaviors like `max-age`, `no-cache`, or `public` to control how your content is cached.' 
+    {
+      method: 'GET', path: `${baseUrl}/custom-cache?`, description: 'Dynamically set the Cache-Control header for the response based on query parameters. Specify caching behaviors like `max-age`, `no-cache`, or `public` to control how your content is cached.'
     },
 
     { method: 'GET', path: `${baseUrl}/custom-cache?cacheControl='max-age=3600'`, description: 'Set Cache-Control: max-age=3600' },
@@ -132,19 +138,34 @@ app.get('/no-cache-control', (c) => {
   c.header('Cache-Control', processedValue);
   return c.json({ message: `Response with Cache-Control: ${processedValue}` });
 });
+*/
 
- */
-app.get('/custom-cache', (c) => {
+
+app.get('/custom-cache', async (c) => {
   let cacheControl = c.req.query('cacheControl') || 'default-value'; // Get cacheControl query parameter
-  
+
   // Sanitize input: remove unwanted characters if necessary
   cacheControl = cacheControl.replace(/['"]/g, '').trim(); // Remove quotes and trim whitespace
 
+  // Set headers
   c.header('Cache-Control', cacheControl); // Set the Cache-Control header
-  c.header('Content-Type', 'text/plain'); // Set the content type to text
-  return c.text(`Cache-Control set to: ${cacheControl}`);
+
+  const filePath = path.join(process.cwd(), './public/static', 'cf_logo.jpg');
+
+  try {
+    // Read the file content
+    const fileContent = await fs.readFile(filePath);
+    // Return the file content with a content type header
+    c.header('Content-Type', 'image/jpeg'); // Set appropriate content type
+    return c.body(fileContent); // Return the file content
+  } catch (error) {
+    // Return an error message in JSON format if file read fails
+    return c.json({ message: `Error: ${error.message}` }, 500);
+  }
 });
 
 
 
 export default app
+
+
