@@ -4,6 +4,9 @@ pages_build_output_dir = "./dist"
 compatibility_flags = [ "nodejs_compat" ]
 
 
+[[build]]
+command = "npm run build"
+
 # [vars]
 # MY_VAR = "my-variable"
 

@@ -1,11 +1,5 @@
 import { Hono } from 'hono'
 import { renderer } from './renderer'
-//import fs from 'fs';
-import path from 'path';
-import fs from 'fs/promises'; // Ensure fs is imported from promises
-
-import { serveStatic } from '@hono/node-server/serve-static'
-
 
 const app = new Hono()
 
@@ -141,7 +135,7 @@ app.get('/no-cache-control', (c) => {
 */
 
 
-app.get('/custom-cache', async (c) => {
+app.get('/custom-cache',  async (c) => {
   let cacheControl = c.req.query('cacheControl') || 'default-value'; // Get cacheControl query parameter
 
   // Sanitize input: remove unwanted characters if necessary
@@ -150,17 +144,20 @@ app.get('/custom-cache', async (c) => {
   // Set headers
   c.header('Cache-Control', cacheControl); // Set the Cache-Control header
 
-  const filePath = path.join(process.cwd(), './public/static', 'cf_logo.jpg');
+  const imageUrl = 'https://r2-bucket.joaosilvagomes.com/cf_logo.jpg'; // R2 bucket URL
 
   try {
-    // Read the file content
-    const fileContent = await fs.readFile(filePath);
-    // Return the file content with a content type header
-    c.header('Content-Type', 'image/jpeg'); // Set appropriate content type
-    return c.body(fileContent); // Return the file content
+    const response = await fetch(imageUrl, { method: 'GET' });
+
+    if (!response.ok) {
+      return c.json({ message: 'Image not found' }, response.status);
+    }
+
+    const imageBlob = await response.blob(); // Get the image as a Blob
+    return c.body(imageBlob); // Send the image data directly
   } catch (error) {
-    // Return an error message in JSON format if file read fails
-    return c.json({ message: `Error: ${error.message}` }, 500);
+    console.error('Error fetching the image:', error);
+    return c.json({ message: 'Failed to fetch the image' }, 500);
   }
 });
 
