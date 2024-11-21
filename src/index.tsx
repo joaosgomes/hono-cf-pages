@@ -1,5 +1,7 @@
 import { Hono } from 'hono'
 import { renderer } from './renderer'
+import { swaggerUI } from '@hono/swagger-ui'
+import { showRoutes } from 'hono/dev'
 
 const app = new Hono()
 
@@ -17,15 +19,35 @@ let db = [
 //app.get('/', (c) => {
 //  return c.json('joaosgomes hono-cf-pages')
 //})
-
 app.get('/', (c) => {
+  const fullUrl = c.req.url; // Get the full URL from the request
+  const url = new URL(fullUrl); // Create a URL object to easily extract parts
+
+  const baseUrl = `${url.protocol}//${url.host}`; // Construct the base URL
+
   const endpoints = [
-    { method: 'GET', path: '/', description: 'Get a list of all available endpoints staging branch' },
-    { method: 'GET', path: '/text', description: 'Get text message' },
-    { method: 'GET', path: '/items', description: 'Get all items' },
-    { method: 'GET', path: '/items/:id', description: 'Get a specific item by ID' },
-    { method: 'POST', path: '/items', description: 'Post a new item' },
-    { method: 'DELETE', path: '/items/:id', description: 'Delete a specific item by ID' },
+
+    { method: 'GET', path: `${baseUrl}/`, description: 'Get a list of all available endpoints' },
+    { method: 'GET', path: `${baseUrl}/text`, description: 'Get text message' },
+    { method: 'GET', path: `${baseUrl}/items`, description: 'Get all items' },
+    { method: 'GET', path: `${baseUrl}/items/:id`, description: 'Get a specific item by ID' },
+    { method: 'POST', path: `${baseUrl}/items`, description: 'Post a new item' },
+    { method: 'DELETE', path: `${baseUrl}/items/:id`, description: 'Delete a specific item by ID' },
+    { method: 'GET', path: `${baseUrl}/no-cache-control`, description: 'Endpoint without Cache Control Header' },
+    { method: 'GET', path: `${baseUrl}/no-cache`, description: 'Endpoint with Header Cache-Control: private, no-cache, max-age=0, Pragma, no-cache' },
+
+
+    {
+      method: 'GET', path: `${baseUrl}/custom-cache.jpeg?`, description: 'Dynamically set the Cache-Control header for the response based on query parameters. Specify caching behaviors like `max-age`, `no-cache`, or `public` to control how your content is cached.'
+    },
+
+    { method: 'GET', path: `${baseUrl}/custom-cache.jpeg?cacheControl='max-age=3600'`, description: 'Set Cache-Control: max-age=3600' },
+    { method: 'GET', path: `${baseUrl}/custom-cache.jpeg?cacheControl='no-cache'`, description: 'Set Cache-Control: no-cache' },
+    { method: 'GET', path: `${baseUrl}/custom-cache.jpeg?cacheControl='private,max-age=600'`, description: 'Set Cache-Control: private, max-age=600' },
+    { method: 'GET', path: `${baseUrl}/custom-cache.jpeg?cacheControl='no-store'`, description: 'Set Cache-Control: no-store' },
+    { method: 'GET', path: `${baseUrl}/custom-cache.jpeg?cacheControl='immutable,max-age=86400'`, description: 'Set Cache-Control: immutable, max-age=86400' },
+    { method: 'GET', path: `${baseUrl}/custom-cache.jpeg?cacheControl='max-age=300,stale-while-revalidate=600'`, description: 'Set Cache-Control: max-age=300, stale-while-revalidate=600' },
+    { method: 'GET', path: `${baseUrl}/custom-cache.jpeg?cacheControl='public,max-age=1800'`, description: 'Set Cache-Control: public, max-age=1800' },
   ];
 
   return c.json({
@@ -33,6 +55,7 @@ app.get('/', (c) => {
     endpoints,
   });
 });
+
 
 
 app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
@@ -76,8 +99,126 @@ app.delete('/items/:id', (c) => {
   }
 });
 
+app.get('/no-cache', (c) => {
+  c.header('Cache-Control', 'private, no-cache, max-age=0');
+  c.header('Pragma', 'no-cache');
+
+
+  return c.json({ message: 'This response is not cached' });
+});
+
+app.get('/no-cache-control', (c) => {
+  c.header('x-jgomes', '1');
 
 
 
+  return c.json({ message: 'This response does not have cache-control header' });
+});
+
+
+/* app.get('/custom-cache', (c) => {
+  let cacheControlValue = c.req.query('cacheControl');
+
+  // Check if the value is wrapped in quotes and remove them
+  if (cacheControlValue && (cacheControlValue.startsWith("'") && cacheControlValue.endsWith("'") || cacheControlValue.startsWith('"') && cacheControlValue.endsWith('"'))) {
+    cacheControlValue = cacheControlValue.slice(1, -1);
+  }
+
+  // If the query parameter is exactly '', set Cache-Control to empty
+  if (cacheControlValue === '') {
+    c.header('Cache-Control', '');
+    return c.json({ message: 'Response with Cache-Control: (empty)' });
+  }
+
+  // Process the cacheControl value
+  const processedValue = cacheControlValue?.split(',').map(value => value.trim()).filter(Boolean).join(', ') || 'no-store';
+  c.header('Cache-Control', processedValue);
+  return c.json({ message: `Response with Cache-Control: ${processedValue}` });
+});
+*/
+app.on('PURGE', '/cache', (c) => c.text('PURGE Method /cache'))
+
+app.get('/custom-cache', async (c) => {
+  let cacheControl = c.req.query('cacheControl') || 'default-value'; // Get cacheControl query parameter
+
+  // Sanitize input: remove unwanted characters if necessary
+  cacheControl = cacheControl.replace(/['"]/g, '').trim(); // Remove quotes and trim whitespace
+
+  // Set headers
+  c.header('Cache-Control', cacheControl); // Set the Cache-Control header
+
+  const imageUrl = 'https://r2-bucket.joaosilvagomes.com/cf_logo.jpg'; // R2 bucket URL
+
+  try {
+    const response = await fetch(imageUrl, { method: 'GET' });
+
+    if (!response.ok) {
+      return c.json({ message: 'Image not found', status: response.status });
+    }
+
+
+    const imageBlob = await response.blob();
+
+    return new Response(imageBlob, {
+      status: 200,
+      headers: {
+        'Cache-Control': cacheControl,
+        'Content-Type': 'image/jpeg',
+      },
+    });
+
+
+
+
+  } catch (error) {
+    console.error('Error fetching the image:', error);
+    return c.json({ message: 'Failed to fetch the image' }, 500);
+  }
+});
+
+
+app.get('/custom-cache.jpeg', async (c) => {
+  let cacheControl = c.req.query('cacheControl') || 'default-value';
+
+  // Sanitize input for security
+  cacheControl = cacheControl.replace(/['"]/g, '').trim();
+
+  // Set the Cache-Control header
+
+  c.header('Cache-Control', cacheControl);
+
+  c.header('Content-Type', 'image/jpeg');
+
+  const imageUrl = 'https://r2-bucket.joaosilvagomes.com/cf_logo.jpg';
+
+  try {
+    const response = await fetch(imageUrl, { method: 'GET' });
+
+    if (!response.ok) {
+      return c.json({ message: 'Image not found', status: response.status });
+    }
+
+    const imageBlob = await response.blob();
+
+    return new Response(imageBlob, {
+      status: 200,
+      headers: {
+        'Cache-Control': cacheControl,
+        'Content-Type': 'image/jpeg',
+      },
+    });
+
+  } catch (error) {
+    console.error('Error fetching the image:', error);
+    return c.json({ message: 'Failed to fetch the image' }, 500);
+  }
+});
+
+
+showRoutes(app, {
+  verbose: true,
+})
 
 export default app
+
+
