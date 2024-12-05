@@ -183,10 +183,21 @@ app.get('/custom-cache.jpeg', async (c) => {
   // Sanitize input for security
   cacheControl = cacheControl.replace(/['"]/g, '').trim();
 
+  let setCookie = c.req.query('set-cookie');
+  if (setCookie) {
+    setCookie = setCookie.replace(/['"]/g, '').trim();
+  }
+
   // Set the Cache-Control header
 
   c.header('Cache-Control', cacheControl);
 
+   // Conditionally set the se-cookie header
+   if (setCookie) {
+    c.header('Set-Cookie', setCookie);
+  }
+
+  
   c.header('Content-Type', 'image/jpeg');
 
   const imageUrl = 'https://r2-bucket.joaosilvagomes.com/cf_logo.jpg';
@@ -200,13 +211,36 @@ app.get('/custom-cache.jpeg', async (c) => {
 
     const imageBlob = await response.blob();
 
+
+    // Prepare headers for the final response
+    // const headers = {
+    //   'Cache-Control': cacheControl,
+    //   'Content-Type': 'image/jpeg',
+    // };
+
+    const headers: Record<string, string> = {
+      'Cache-Control': cacheControl,
+      'Content-Type': 'image/jpeg',
+      //'Set-Cookie': 'my-cookie-value',
+    };
+
+    // Conditionally include the se-cookie header
+    if (setCookie) {
+      headers['Set-Cookie'] = setCookie;
+    }
+
     return new Response(imageBlob, {
       status: 200,
-      headers: {
-        'Cache-Control': cacheControl,
-        'Content-Type': 'image/jpeg',
-      },
+      headers,
     });
+
+    // return new Response(imageBlob, {
+    //   status: 200,
+    //   headers: {
+    //     'Cache-Control': cacheControl,
+    //     'Content-Type': 'image/jpeg',
+    //   },
+    // });
 
   } catch (error) {
     console.error('Error fetching the image:', error);

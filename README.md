@@ -26,4 +26,12 @@ curl -I "https://staging.joaosilvagomes.com/custom-cache.jpeg?cacheControl=priva
 
 curl -I "https://staging.joaosilvagomes.com/custom-cache.jpeg?cacheControl=no-cache"
 
+curl -I "https://staging.joaosilvagomes.com/custom-cache.jpeg?cacheControl=public,max-age=1800&set-cookie=my-cookie-value"
+
+
+curl -I "http://localhost:5173/custom-cache.jpeg?cacheControl=public,max-age=1800&set-cookie=my-cookie-value"
+
+
+
+
 ````
