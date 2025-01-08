@@ -33,5 +33,9 @@ curl -I "http://localhost:5173/custom-cache.jpeg?cacheControl=public,max-age=180
 
 
 
+## statuscode
+
+curl -I "http://localhost:5173/custom-cache.jpeg?cacheControl=public,max-age=1800&statusCode=404"
+
 
 ````

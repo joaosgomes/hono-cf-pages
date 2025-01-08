@@ -116,6 +116,33 @@ app.get('/no-cache-control', (c) => {
 });
 
 
+
+
+
+app.get('/timeout', async (c) => {
+  const delay = 60 * 1000; // 30 seconds delay
+  
+  // Simulate a timeout by using setTimeout inside a promise
+  await new Promise(resolve => setTimeout(resolve, delay));
+  
+  // After the delay, send a response
+  return c.json({ message: 'Request timed out after delay' });
+});
+
+// Generate a large Content-Security-Policy header
+const largeCSP = "default-src 'self'; " + "script-src https://example.com ".repeat(100); // ~16 KB CSP header
+const x_custom_jgomes = "joaosilvagomes".repeat(100); // ~16 KB CSP header
+
+app.get('/large-header', (c) => {
+  c.header('Content-Security-Policy', largeCSP);
+  c.header('X-Custom-JGOMES', x_custom_jgomes);
+
+  return c.json({ message: 'This is a response with a large CSP header' });
+});
+
+
+
+
 /* app.get('/custom-cache', (c) => {
   let cacheControlValue = c.req.query('cacheControl');
 
@@ -136,6 +163,8 @@ app.get('/no-cache-control', (c) => {
   return c.json({ message: `Response with Cache-Control: ${processedValue}` });
 });
 */
+
+
 app.on('PURGE', '/cache', (c) => c.text('PURGE Method /cache'))
 
 app.get('/custom-cache', async (c) => {
@@ -188,6 +217,17 @@ app.get('/custom-cache.jpeg', async (c) => {
     setCookie = setCookie.replace(/['"]/g, '').trim();
   }
 
+  // Retrieve and sanitize statusCode from query string
+  let statusCodeString = c.req.query('statusCode');
+  let statusCode = statusCodeString
+    ? parseInt(statusCodeString, 10)
+    : 200; // Default to 200 if not provided
+
+  // Validate statusCode to ensure it is a valid HTTP status code
+  if (isNaN(statusCode) || statusCode < 100 || statusCode > 599) {
+    statusCode = 200; // Default to 200 if invalid
+  }
+
   // Set the Cache-Control header
 
   c.header('Cache-Control', cacheControl);
@@ -230,7 +270,7 @@ app.get('/custom-cache.jpeg', async (c) => {
     }
 
     return new Response(imageBlob, {
-      status: 200,
+      status: statusCode,
       headers,
     });
 
