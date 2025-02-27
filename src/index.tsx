@@ -68,6 +68,13 @@ app.get('/redirect.js', (c) => {
   return c.redirect('/302-redirect.js', 302);
 });
 
+app.get('/302-redirect.js', (c) => {
+  return c.text('console.log("Hello from 302-redirect.js!");', {
+    headers: { 'Content-Type': 'application/javascript' },
+  });
+});
+
+
 // Endpoint to Get a Single Item by ID (GET /item/:id)
 app.get('/items/:id', (c) => {
   const id = parseInt(c.req.param('id'));
