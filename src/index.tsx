@@ -64,6 +64,10 @@ app.get('/items', (c) => {
   return c.json(db);
 });
 
+app.get('/redirect.js', (c) => {
+  return c.redirect('/302-redirect.js', 302);
+});
+
 // Endpoint to Get a Single Item by ID (GET /item/:id)
 app.get('/items/:id', (c) => {
   const id = parseInt(c.req.param('id'));
