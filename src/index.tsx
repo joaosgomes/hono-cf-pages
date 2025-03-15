@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { renderer } from './renderer'
 import { swaggerUI } from '@hono/swagger-ui'
 import { showRoutes } from 'hono/dev'
+import { compress } from 'hono/compress'
 
 const app = new Hono()
 
