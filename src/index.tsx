@@ -75,7 +75,7 @@ app.get('/302-redirect.js', (c) => {
   });
 });
 
-app.get('/br', compress({ encoding: 'br' }), (c) => {
+app.get('/br', compress({ encoding: 'deflate' }), (c) => {
   return c.text('<h1>Hello, Brotli Compressed HTML!</h1>', 200, {
     'Content-Type': 'text/html; charset=utf-8'
   })
