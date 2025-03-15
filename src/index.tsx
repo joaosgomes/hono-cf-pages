@@ -3,6 +3,8 @@ import { renderer } from './renderer'
 import { swaggerUI } from '@hono/swagger-ui'
 import { showRoutes } from 'hono/dev'
 import { compress } from 'hono/compress'
+import { brotliCompressSync } from 'node:zlib'
+
 
 const app = new Hono()
 
@@ -75,9 +77,15 @@ app.get('/302-redirect.js', (c) => {
   });
 });
 
-app.get('/br', compress({ encoding: 'deflate' }), (c) => {
-  return c.text('<h1>Hello, Brotli Compressed HTML!</h1>', 200, {
-    'Content-Type': 'text/html; charset=utf-8'
+app.get('/br', (c) => {
+  const html = '<h1>Hello, Brotli Compressed HTML!</h1>'
+  const compressed = brotliCompressSync(Buffer.from(html)) // Compress HTML
+
+  return new Response(compressed, {
+    headers: {
+      'Content-Type': 'text/html; charset=utf-8',
+      'Content-Encoding': 'br'
+    }
   })
 })
 
