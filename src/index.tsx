@@ -74,6 +74,12 @@ app.get('/302-redirect.js', (c) => {
   });
 });
 
+app.get('/br', compress({ encoding: 'br' }), (c) => {
+  return c.text('<h1>Hello, Brotli Compressed HTML!</h1>', 200, {
+    'Content-Type': 'text/html; charset=utf-8'
+  })
+})
+
 
 // Endpoint to Get a Single Item by ID (GET /item/:id)
 app.get('/items/:id', (c) => {
