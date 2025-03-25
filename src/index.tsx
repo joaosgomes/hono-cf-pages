@@ -69,7 +69,8 @@ app.get('/weak-etag', (c) => {
     headers: { 
       'etag': 'W/"52b695334001ee0701d7a0f4bafb015a"',
       'content-encoding': 'gzip',
-      'cache-control': 'no-cache, must-revalidate, max-age=0, no-store'
+      'cache-control': 'no-cache, must-revalidate, max-age=0, no-store',
+      'set-cookie': 'anspress_session=91eba37fb77b875560ffb2e2c8251eaf; expires=Wed, 26 Mar 2025 20:37:30 GMT; Max-Age=86400; path=/'
     },
   });
 });
