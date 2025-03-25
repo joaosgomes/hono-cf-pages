@@ -68,9 +68,8 @@ app.get('/weak-etag', (c) => {
   return c.text('W/"52b695334001ee0701d7a0f4bafb015a"', {
     headers: { 
       'etag': 'W/"52b695334001ee0701d7a0f4bafb015a"',
-      'Content-Encoding': 'gzip',
-      'cache-control: no-cache, must-revalidate, max-age=0, no-store'
-
+      'content-encoding': 'gzip',
+      'cache-control': 'no-cache, must-revalidate, max-age=0, no-store'
     },
   });
 });
