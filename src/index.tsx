@@ -66,6 +66,7 @@ app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
 app.get('/weak-etag/commercialsearch-com-news/economists-view-distress-opportunity-awaits-or-does-it/', (c) => {
   return c.text('W/"52b695334001ee0701d7a0f4bafb015a"', {
     headers: { 
+      'set-cookie': '__cf_bm=UWNfGor8KJ8a662Ws10G9_72ItdWQYLSW_ih7F7KFNc-1742938794-1.0.1.1-oD9FGmhumc6Jh0lFZQ6amgcwY.MlfYZ3ZZyB5pysrWruAMDLyKlG8Q9d15Z4lHSgj2xK6dWGHXiEFP_.43Ri.PW20a2I8RPznxp9Vi8QvoA; path=/; expires=Tue, 25-Mar-25 22:09:54 GMT; domain=.yardi.com; HttpOnly; Secure; SameSite=None',
       'x-robots-tag': 'noindex, nofollow',
       'content-type': 'text/html; charset=UTF-8',
       'vary': 'Accept-Encoding',
