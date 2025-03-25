@@ -63,6 +63,18 @@ app.get('/', (c) => {
 
 app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
 
+
+app.get('/weak-etag', (c) => {
+  return c.text('W/"52b695334001ee0701d7a0f4bafb015a"', {
+    headers: { 
+      'etag': 'W/"52b695334001ee0701d7a0f4bafb015a"',
+      'Content-Encoding': 'gzip',
+      'cache-control: no-cache, must-revalidate, max-age=0, no-store'
+
+    },
+  });
+});
+
 app.get('/items', (c) => {
   return c.json(db);
 });
