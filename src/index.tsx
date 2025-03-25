@@ -63,8 +63,7 @@ app.get('/', (c) => {
 
 app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
 
-
-app.get('/weak-etag/commercialsearch-com-news/economists-view-distress-opportunity-awaits-or-does-it', (c) => {
+app.get('/weak-etag/commercialsearch-com-news/economists-view-distress-opportunity-awaits-or-does-it/', (c) => {
   return c.text('W/"52b695334001ee0701d7a0f4bafb015a"', {
     headers: { 
       'etag': 'W/"52b695334001ee0701d7a0f4bafb015a"',
