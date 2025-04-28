@@ -89,6 +89,7 @@ app.get('/image-purge.jpeg', async (c) => {
     return new Response(imageBlob, {
       status: 200,
       headers: {
+        "Cache-Control": "public, max-age=120",
         "Content-Type": "image/jpeg",
         "Cache-Tag": "tag"
       },
