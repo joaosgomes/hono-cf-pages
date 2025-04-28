@@ -64,7 +64,7 @@ app.get('/', (c) => {
 app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
 
 
-app.get('/image-purge.png', async (c) => {
+app.get('/image-purge.jpeg', async (c) => {
   const customHeader = c.req.header('X-Custom-Image'); // get header "X-Custom-Image"
 
   let imageUrl;
@@ -89,8 +89,8 @@ app.get('/image-purge.png', async (c) => {
     return new Response(imageBlob, {
       status: 200,
       headers: {
-        'Content-Type': 'image/jpeg',
-        'Cache-Tag': 'tag', // <-- here you add the Cache-Tag header
+        "Content-Type": "image/jpeg",
+        "Cache-Tag": "tag"
       },
     });
   } catch (error) {
