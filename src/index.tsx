@@ -64,7 +64,7 @@ app.get('/', (c) => {
 app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
 
 
-app.get('/image-purge', async (c) => {
+app.get('/image-purge.png', async (c) => {
   const customHeader = c.req.header('X-Custom-Image'); // get header "X-Custom-Image"
 
   let imageUrl;
