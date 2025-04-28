@@ -63,6 +63,43 @@ app.get('/', (c) => {
 
 app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
 
+
+app.get('/image-purge', async (c) => {
+  const customHeader = c.req.header('X-Custom-Image'); // get header "X-Custom-Image"
+
+  let imageUrl;
+
+  if (!customHeader || customHeader === '0') {
+    imageUrl = 'https://r2-bucket.joaosilvagomes.com/cf_logo.jpg'; // default
+  } else if (customHeader === '1') {
+    imageUrl = 'https://r2-bucket.joaosilvagomes.com/poster-jpeg.jpeg';
+  } else {
+    return c.json({ message: 'Invalid header value' }, 400);
+  }
+
+  try {
+    const response = await fetch(imageUrl);
+
+    if (!response.ok) {
+      return c.json({ message: 'Image not found', status: response.status });
+    }
+
+    const imageBlob = await response.blob();
+
+    return new Response(imageBlob, {
+      status: 200,
+      headers: {
+        'Content-Type': 'image/jpeg',
+        'Cache-Tag': 'tag', // <-- here you add the Cache-Tag header
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching the image:', error);
+    return c.json({ message: 'Failed to fetch the image' }, 500);
+  }
+});
+
+
 app.get('/weak-etag/commercialsearch-com-news/economists-view-distress-opportunity-awaits-or-does-it/', (c) => {
   return c.text('w/"52b695334001ee0701d7a0f4bafb015a"', {
     headers: { 
