@@ -61,6 +61,31 @@ app.get('/', (c) => {
 
 
 
+app.get('/video', async (c) => {
+  const videoUrl = 'https://r2-bucket.joaosilvagomes.com/BigBuckBunny_320x180.mp4';
+
+  const res = await fetch(videoUrl);
+  if (!res.ok) {
+    return c.text('Video not found', 404);
+  }
+
+  // Clone the video stream
+  const videoStream = res.body;
+
+  return new Response(videoStream, {
+    status: 200,
+    headers: {
+      'Vary': 'Accept-Encoding',
+      'Content-Encoding': 'gzip',
+      'Content-Type': 'video/mp4',
+      'Server': 'Apache',
+      'Accept-Ranges': 'bytes',
+    },
+  });
+});
+
+
+
 app.get('/text', (c) => c.json('Hello Cloudflare Workers!'))
 
 app.get('/image-purge.jpeg', async (c) => {
