@@ -61,7 +61,7 @@ app.get('/', (c) => {
 
 
 
-app.get('/video', async (c) => {
+app.get('/video.mp4', async (c) => {
   const videoUrl = 'https://r2-bucket.joaosilvagomes.com/BigBuckBunny_320x180.mp4';
 
   const res = await fetch(videoUrl);
