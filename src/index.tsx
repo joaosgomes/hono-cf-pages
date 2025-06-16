@@ -60,6 +60,17 @@ app.get('/', (c) => {
 });
 
 
+// Exact match route
+app.get('/us/lazgcp/20ab0f1a-9587-43d9-a980-a5b12959c30f_ALL-93-52.png', (c) => {
+  return c.text('200 OK: Image path matched')
+})
+
+// Fallback route: 404 Not Found
+app.all('*', (c) => {
+  return c.text('404 Not Found', 404)
+})
+
+
 
 app.get('/video.mp4', async (c) => {
   const videoUrl = 'https://r2-bucket.joaosilvagomes.com/BigBuckBunny_320x180.mp4';
