@@ -60,6 +60,30 @@ app.get('/', (c) => {
 });
 
 
+app.get('/error-500.html', (c) => {
+  const html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>Cloudflare Error</title>
+</head>
+<body>
+
+  <div>::CLOUDFLARE_ERROR_500S_BOX::</div>
+
+  <p>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+  </p>
+
+</body>
+</html>`
+
+  return c.html(html, 500)
+})
+
+
 // Exact match route
 app.get('/us/lazgcp/20ab0f1a-9587-43d9-a980-a5b12959c30f_ALL-93-52.png', (c) => {
   return c.text('200 OK: Image path matched')
