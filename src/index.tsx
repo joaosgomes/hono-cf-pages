@@ -104,7 +104,7 @@ app.get('/error-1000.html', (c) => {
 </body>
 </html>`
 
-    return c.html(html, 1000)
+    return c.html(html, 500)
 })
 
 // Exact match route
