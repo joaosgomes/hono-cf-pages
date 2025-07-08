@@ -104,6 +104,8 @@ app.get('/error-1000.html', (c) => {
 </body>
 </html>`
 
+    return c.html(html, 1000)
+})
 
 // Exact match route
 app.get('/us/lazgcp/20ab0f1a-9587-43d9-a980-a5b12959c30f_ALL-93-52.png', (c) => {
