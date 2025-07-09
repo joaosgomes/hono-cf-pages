@@ -22,6 +22,12 @@ let db = [
 //app.get('/', (c) => {
 //  return c.json('joaosgomes hono-cf-pages')
 //})
+
+// Exact match route
+app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-large-shareholding-(above-5%)-of-investment-securities-0000000498', (c) => {
+  return c.text('200 OK')
+})
+
 app.get('/', (c) => {
   const fullUrl = c.req.url; // Get the full URL from the request
   const url = new URL(fullUrl); // Create a URL object to easily extract parts
