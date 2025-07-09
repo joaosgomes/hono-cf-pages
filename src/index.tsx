@@ -23,10 +23,6 @@ let db = [
 //  return c.json('joaosgomes hono-cf-pages')
 //})
 
-// Exact match route
-app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-large-shareholding-(above-5%)-of-investment-securities-0000000498', (c) => {
-  return c.text('200 OK')
-})
 
 app.get('/', (c) => {
   const fullUrl = c.req.url; // Get the full URL from the request
@@ -117,6 +113,12 @@ app.get('/error-1000.html', (c) => {
 app.get('/us/lazgcp/20ab0f1a-9587-43d9-a980-a5b12959c30f_ALL-93-52.png', (c) => {
   return c.text('200 OK: Image path matched')
 })
+
+// Exact match route
+app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-large-shareholding-(above-5%)-of-investment-securities-0000000498', (c) => {
+  return c.text('200 OK')
+})
+
 
 // Fallback route: 404 Not Found
 app.all('*', (c) => {
