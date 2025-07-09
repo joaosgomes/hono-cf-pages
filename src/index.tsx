@@ -64,7 +64,7 @@ app.get('/error-500.html', (c) => {
   const html = `<!DOCTYPE html>
 <html>
 <head>
-  <title>Cloudflare Error</title>
+  <title>*Cloudflare Error*</title>
 </head>
 <body>
 
