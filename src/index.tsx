@@ -115,6 +115,10 @@ app.get('/us/lazgcp/20ab0f1a-9587-43d9-a980-a5b12959c30f_ALL-93-52.png', (c) => 
 })
 
 // Exact match route
+app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-large-shareholding-%28above-5%%29-0000000699', (c) => {
+  return c.text('200 OK')
+})
+
 app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-large-shareholding-(above-5%)-of-investment-securities-0000000498', (c) => {
   return c.text('200 OK')
 })
