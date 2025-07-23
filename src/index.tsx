@@ -128,6 +128,10 @@ app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-lar
   return c.text('200 OK')
 })
 
+app.get('/test/%A%GGG', (c) => {
+  return c.text('200 OK')
+})
+
 app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-large-shareholding-(above-5%)-of-investment-securities-0000000498', (c) => {
   return c.text('200 OK')
 })
