@@ -109,7 +109,7 @@ app.get('/error-1000.html', (c) => {
     return c.html(html, 500)
 })
 
-app.get('/binary', (c) => {
+app.get('/binary.bin', (c) => {
   const binaryData = new Uint8Array([0x48, 0x65, 0x6C, 0x6C, 0x6F]) // "Hello" in ASCII
 
   return c.body(binaryData, 200, {
