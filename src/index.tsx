@@ -109,6 +109,15 @@ app.get('/error-1000.html', (c) => {
     return c.html(html, 500)
 })
 
+app.get('/binary', (c) => {
+  const binaryData = new Uint8Array([0x48, 0x65, 0x6C, 0x6C, 0x6F]) // "Hello" in ASCII
+
+  return c.body(binaryData, 200, {
+    'Content-Type': 'application/octet-stream',
+    'Content-Disposition': 'attachment; filename="hello.bin"',
+  })
+})
+
 // Exact match route
 app.get('/us/lazgcp/20ab0f1a-9587-43d9-a980-a5b12959c30f_ALL-93-52.png', (c) => {
   return c.text('200 OK: Image path matched')
