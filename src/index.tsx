@@ -429,7 +429,7 @@ app.get('/custom-cache.jpeg', async (c) => {
   
   c.header('Content-Type', 'image/jpeg');
 
-  const imageUrl = 'https://r2-bucket.joaosilvagomes.com/cf_logo.jpg';
+  const imageUrl = 'https://bucket.tunnel.joaosilvagomes.com/cf-logo.png';
 
   try {
     const response = await fetch(imageUrl, { method: 'GET' });
