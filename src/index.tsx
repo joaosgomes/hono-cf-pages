@@ -138,9 +138,9 @@ app.get('/worldwide/en/company/ir/stock-information/investors-news/change-in-lar
 
 
 // Fallback route: 404 Not Found
-app.all('*', (c) => {
-  return c.text('404 Not Found', 404)
-})
+//app.all('*', (c) => {
+//  return c.text('404 Not Found', 404)
+//})
 
 
 
