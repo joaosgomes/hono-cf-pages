@@ -226,6 +226,17 @@ app.get('/weak-etag/commercialsearch-com-news/economists-view-distress-opportuni
   });
 });
 
+
+app.get('/set-cookie-pages', (c) => {
+  return c.text('set-cookie-pages test', {
+    headers: { 
+      'content-type': 'text/html; charset=UTF-8',
+      'cache-control': 'public, max-age=120, s-maxage=172800, stale-while-revalidate=600, stale-if-error=600'
+      //'set-cookie': 'anspress_session=91eba37fb77b875560ffb2e2c8251eaf; expires=Wed, 26 Mar 2025 20:37:30 GMT; Max-Age=86400; path=/'
+    },
+  });
+});
+
 app.get('/items', (c) => {
   return c.json(db);
 });
