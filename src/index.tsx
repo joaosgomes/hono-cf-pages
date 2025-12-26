@@ -130,6 +130,18 @@ app.get('/الرئيسية', (c) => {
   })
 })
 
+
+app.get('/الرئيسية/', (c) => {
+  // Get path
+  const path = c.req.path
+  // Get all headers as an object
+  const headers = Object.fromEntries(c.req.raw.headers.entries())
+  return c.json({
+    path,
+    headers
+  })
+})
+
 // Exact match route
 app.get('/us/lazgcp/20ab0f1a-9587-43d9-a980-a5b12959c30f_ALL-93-52.png', (c) => {
   return c.text('200 OK: Image path matched')
