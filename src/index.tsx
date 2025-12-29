@@ -86,6 +86,37 @@ app.get('/error-500.html', (c) => {
 })
 
 
+app.get('/polish', async (c) => {
+  const imageUrl =
+    'https://tencate1952.com/media/e9/13/7b/1764666438/Website_desktop_home%20thermo%202025.png'
+
+  const res = await fetch(imageUrl)
+
+  // Clone the image body
+  const body = res.body
+
+  return new Response(body, {
+    status: 200,
+    headers: {
+      // Content headers
+      'Content-Type': 'image/png',
+
+      // Cache control (example)
+      'Cache-Control': 'public, max-age=30',
+
+      // Security headers (examples)
+      'X-Content-Type-Options': 'nosniff',
+      'Content-Security-Policy': "default-src 'none'; img-src 'self'",
+
+      // Custom header
+      'X-Proxied-By': 'Hono',
+
+      // Optional: allow cross-origin usage
+      'Access-Control-Allow-Origin': '*',
+    },
+  })
+})
+
 app.get('/error-1000.html', (c) => {
   const html = `<!DOCTYPE html>
 <html>
