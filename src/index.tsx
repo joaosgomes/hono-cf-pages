@@ -86,9 +86,8 @@ app.get('/error-500.html', (c) => {
 })
 
 
-app.get('/polish', async (c) => {
-  const imageUrl =
-    'https://tencate1952.com/media/e9/13/7b/1764666438/Website_desktop_home%20thermo%202025.png'
+app.get('/polish.png', async (c) => {
+  const imageUrl = 'https://tencate1952.com/media/e9/13/7b/1764666438/Website_desktop_home%20thermo%202025.png'
 
   const res = await fetch(imageUrl)
 
@@ -105,8 +104,8 @@ app.get('/polish', async (c) => {
       'Cache-Control': 'public, max-age=30',
 
       // Security headers (examples)
-      'X-Content-Type-Options': 'nosniff',
-      'Content-Security-Policy': "default-src 'none'; img-src 'self'",
+      //'X-Content-Type-Options': 'nosniff',
+      //'Content-Security-Policy': "default-src 'none'; img-src 'self'",
 
       // Custom header
       'X-Proxied-By': 'Hono',
