@@ -89,7 +89,14 @@ app.get('/error-500.html', (c) => {
 app.get('/polish.png', async (c) => {
   const imageUrl = 'https://tencate1952.com/media/e9/13/7b/1764666438/Website_desktop_home%20thermo%202025.png'
 
-  const res = await fetch(imageUrl)
+  //const res = await fetch(imageUrl)
+
+   // Use fetch with Keep-Alive agent if Node (optional)
+  const res = await fetch(imageUrl, {
+    headers: {
+      'Connection': 'keep-alive',
+    },
+  })
 
   // Clone the image body
   const body = res.body
@@ -112,6 +119,7 @@ app.get('/polish.png', async (c) => {
 
       // Optional: allow cross-origin usage
       'Access-Control-Allow-Origin': '*',
+      'Connection': 'keep-alive'
     },
   })
 })
