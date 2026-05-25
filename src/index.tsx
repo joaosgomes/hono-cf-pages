@@ -82,8 +82,15 @@ app.get('/markdown/proxy', async (c) => {
       blob: new Blob([await res.arrayBuffer()], { type: contentType }),
     },
   ])
-  return c.text(result[0]?.data ?? '', 200, {
-    'Content-Type': 'text/markdown; charset=utf-8',
+  const doc = result[0]
+  return new Response(doc?.data ?? '', {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/markdown; charset=utf-8',
+      'X-Markdown-Tokens': String(doc?.tokens ?? 0),
+      'Content-Signal': 'ai-train=yes, search=yes, ai-input=yes',
+      'Vary': 'Accept',
+    },
   })
 })
 
