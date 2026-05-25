@@ -29,5 +29,5 @@ cpu_ms = 300_000
 [ai]
 binding = "AI"
 
-[images]
-binding = "IMAGES"
+# [images]
+# binding = "IMAGES"
