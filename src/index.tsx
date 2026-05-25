@@ -6,7 +6,12 @@ import { compress } from 'hono/compress'
 import { brotliCompressSync } from 'node:zlib'
 
 
-const app = new Hono()
+type Bindings = {
+  AI: Ai
+}
+
+const app = new Hono<{ Bindings: Bindings }>()
+
 
 
 //middlware
@@ -62,6 +67,27 @@ app.get('/', (c) => {
 });
 
 
+
+
+app.get('/markdown/proxy', async (c) => {
+  const url = c.req.query('url')
+  if (!url) return c.json({ error: 'Missing ?url= param' }, 400)
+  const res = await fetch(url)
+  if (!res.ok) return c.json({ error: 'Upstream fetch failed', status: res.status }, 502)
+  const contentType = res.headers.get('content-type') ?? 'text/html'
+  const filename = new URL(url).pathname.split('/').pop() || 'index.html'
+  const result = await c.env.AI.toMarkdown([
+    {
+      name: filename,
+      blob: new Blob([await res.arrayBuffer()], { type: contentType }),
+    },
+  ])
+  return c.text(result[0]?.data ?? '', 200, {
+    'Content-Type': 'text/markdown; charset=utf-8',
+  })
+})
+
+
 app.get('/error-500.html', (c) => {
   const html = `<!DOCTYPE html>
 <html>
@@ -91,7 +117,7 @@ app.get('/polish.png', async (c) => {
 
   //const res = await fetch(imageUrl)
 
-   // Use fetch with Keep-Alive agent if Node (optional)
+  // Use fetch with Keep-Alive agent if Node (optional)
   const res = await fetch(imageUrl, {
     headers: {
       'Connection': 'keep-alive',
@@ -144,7 +170,7 @@ app.get('/error-1000.html', (c) => {
 </body>
 </html>`
 
-    return c.html(html, 500)
+  return c.html(html, 500)
 })
 
 app.get('/binary.bin', (c) => {
@@ -274,8 +300,7 @@ app.get('/image-purge.jpeg', async (c) => {
 
 app.get('/weak-etag/commercialsearch-com-news/economists-view-distress-opportunity-awaits-or-does-it/', (c) => {
   return c.text('w/"52b695334001ee0701d7a0f4bafb015a"', {
-    headers: { 
-      'set-cookie': '__cf_bm=UWNfGor8KJ8a662Ws10G9_72ItdWQYLSW_ih7F7KFNc-1742938794-1.0.1.1-oD9FGmhumc6Jh0lFZQ6amgcwY.MlfYZ3ZZyB5pysrWruAMDLyKlG8Q9d15Z4lHSgj2xK6dWGHXiEFP_.43Ri.PW20a2I8RPznxp9Vi8QvoA; path=/; expires=Tue, 25-Mar-25 22:09:54 GMT; domain=.yardi.com; HttpOnly; Secure; SameSite=None',
+    headers: {
       'x-robots-tag': 'noindex, nofollow',
       'content-type': 'text/html; charset=UTF-8',
       'vary': 'Accept-Encoding',
@@ -291,7 +316,7 @@ app.get('/weak-etag/commercialsearch-com-news/economists-view-distress-opportuni
 
 app.get('/set-cookie-pages', (c) => {
   return c.text('set-cookie-pages test', {
-    headers: { 
+    headers: {
       'content-type': 'text/html; charset=UTF-8',
       'cache-control': 'public, max-age=120, s-maxage=172800, stale-while-revalidate=600, stale-if-error=600'
       //'set-cookie': 'anspress_session=91eba37fb77b875560ffb2e2c8251eaf; expires=Wed, 26 Mar 2025 20:37:30 GMT; Max-Age=86400; path=/'
@@ -383,10 +408,10 @@ app.get('/no-cache-control', (c) => {
 
 app.get('/timeout', async (c) => {
   const delay = 60 * 1000; // 30 seconds delay
-  
+
   // Simulate a timeout by using setTimeout inside a promise
   await new Promise(resolve => setTimeout(resolve, delay));
-  
+
   // After the delay, send a response
   return c.json({ message: 'Request timed out after delay' });
 });
@@ -494,12 +519,12 @@ app.get('/custom-cache.jpeg', async (c) => {
 
   c.header('Cache-Control', cacheControl);
 
-   // Conditionally set the se-cookie header
-   if (setCookie) {
+  // Conditionally set the se-cookie header
+  if (setCookie) {
     c.header('Set-Cookie', setCookie);
   }
 
-  
+
   c.header('Content-Type', 'image/jpeg');
 
   const imageUrl = 'https://bucket.tunnel.joaosilvagomes.com/cf-logo.png';
