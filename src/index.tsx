@@ -4,6 +4,7 @@ import { swaggerUI } from '@hono/swagger-ui'
 import { showRoutes } from 'hono/dev'
 import { compress } from 'hono/compress'
 import { brotliCompressSync } from 'node:zlib'
+import { html } from 'hono/html'
 
 
 type Bindings = {
@@ -94,6 +95,18 @@ app.get('/markdown/proxy', async (c) => {
   })
 })
 
+app.get('/hello.html', (c) => {
+  return c.html(html`<!DOCTYPE html>
+<html>
+<head>
+  <title>Hello</title>
+</head>
+<body>
+  <h1>Hello, world!</h1>
+  <p>This is a simple HTML page.</p>
+</body>
+</html>`)
+})
 
 app.get('/error-500.html', (c) => {
   const html = `<!DOCTYPE html>
