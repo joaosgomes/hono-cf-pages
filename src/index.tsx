@@ -68,6 +68,44 @@ app.get('/', (c) => {
 });
 
 
+app.get('/robots.txt', (c) => {
+  const baseUrl = new URL(c.req.url).origin
+  return c.text(
+    `User-agent: *
+Allow: /
+Sitemap: ${baseUrl}/sitemap.xml
+`,
+    200,
+    { 'Content-Type': 'text/plain; charset=utf-8' }
+  )
+})
+
+app.get('/sitemap.xml', (c) => {
+  const baseUrl = new URL(c.req.url).origin
+  const urls = [
+    '/',
+    '/text',
+    '/items',
+    '/hello.html',
+  ]
+
+  const body = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+  .map(
+    (path) => `  <url>
+    <loc>${baseUrl}${path}</loc>
+    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`
+  )
+  .join('\n')}
+</urlset>
+`
+  return c.body(body, 200, { 'Content-Type': 'application/xml; charset=utf-8' })
+})
+
 
 
 app.get('/markdown/proxy', async (c) => {
