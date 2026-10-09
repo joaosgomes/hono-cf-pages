@@ -71,7 +71,13 @@ app.get('/', (c) => {
 });
 
 
-
+app.get('/vpc/debug', (c) => {
+  return c.json({
+    VPC_SERVICE: Boolean(c.env.VPC_SERVICE),
+    WHOAMI_SERVICE: Boolean(c.env.WHOAMI_SERVICE),
+    H2TEST_NGINX: Boolean(c.env.H2TEST_NGINX),
+  })
+})
 
 app.get('/vpc/native', (c) => {
   const url = new URL(c.req.url)
