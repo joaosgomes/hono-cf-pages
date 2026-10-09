@@ -9,6 +9,9 @@ import { html } from 'hono/html'
 
 type Bindings = {
   AI: Ai
+  VPC_SERVICE: Fetcher
+  WHOAMI_SERVICE: Fetcher
+  H2TEST_NGINX: Fetcher
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -66,6 +69,36 @@ app.get('/', (c) => {
     endpoints,
   });
 });
+
+
+
+
+app.get('/vpc/native', (c) => {
+  const url = new URL(c.req.url)
+  const targetUrl = `http://localhost:3000${url.pathname}${url.search}`
+
+  return c.env.VPC_SERVICE.fetch(targetUrl, {
+    headers: c.req.raw.headers,
+  })
+})
+
+app.get('/vpc/whoami', (c) => {
+  const url = new URL(c.req.url)
+  const targetUrl = `http://whoami${url.pathname}${url.search}`
+
+  return c.env.WHOAMI_SERVICE.fetch(targetUrl, {
+    headers: c.req.raw.headers,
+  })
+})
+
+app.get('/vpc/h2test', (c) => {
+  const url = new URL(c.req.url)
+  const targetUrl = `https://h2test-nginx-origin${url.pathname}${url.search}`
+
+  return c.env.H2TEST_NGINX.fetch(targetUrl, {
+    headers: c.req.raw.headers,
+  })
+})
 
 
 app.get('/robots.txt', (c) => {

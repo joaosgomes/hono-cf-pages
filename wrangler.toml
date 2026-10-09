@@ -1,30 +1,28 @@
 name = "hono-cf-pages"
-compatibility_date = "2024-10-16"
-pages_build_output_dir = "./dist"
+main = "src/index.tsx"
+compatibility_date = "2026-10-09"
 compatibility_flags = [ "nodejs_compat" ]
 
-
-[[build]]
-command = "npm run build"
+[assets]
+directory = "./public"
 
 [limits]
 cpu_ms = 300_000
 
-# [vars]
-# MY_VAR = "my-variable"
-
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-
-# [[r2_buckets]]
-# binding = "MY_BUCKET"
-# bucket_name = "my-bucket"
-
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "my-database"
-# database_id = ""
-
 [ai]
 binding = "AI"
+
+[[vpc_services]]
+binding = "VPC_SERVICE"
+service_id = "019d8332-b9e8-7021-85c5-1df4926b7b6e" # NATIVE
+remote = true
+
+[[vpc_services]]
+binding = "WHOAMI_SERVICE"
+service_id = "019bf4a3-5424-7f21-b34d-308eadc55b17"
+remote = true
+
+[[vpc_services]]
+binding = "H2TEST_NGINX"
+service_id = "019f1e85-7e95-7c12-9dca-9a64ea907b7a"
+remote = true
