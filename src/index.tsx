@@ -9,11 +9,8 @@ import { html } from 'hono/html'
 
 type Bindings = {
   AI: Ai
-  VPC_SERVICE: Fetcher
-  WHOAMI_SERVICE: Fetcher
-  H2TEST_NGINX: Fetcher
+  VPC_PROXY: Fetcher
 }
-
 const app = new Hono<{ Bindings: Bindings }>()
 
 
@@ -70,40 +67,14 @@ app.get('/', (c) => {
   });
 });
 
-
 app.get('/vpc/debug', (c) => {
   return c.json({
-    VPC_SERVICE: Boolean(c.env.VPC_SERVICE),
-    WHOAMI_SERVICE: Boolean(c.env.WHOAMI_SERVICE),
-    H2TEST_NGINX: Boolean(c.env.H2TEST_NGINX),
+    VPC_PROXY: Boolean(c.env.VPC_PROXY),
   })
 })
 
-app.get('/vpc/native', (c) => {
-  const url = new URL(c.req.url)
-  const targetUrl = `http://localhost:3000${url.pathname}${url.search}`
-
-  return c.env.VPC_SERVICE.fetch(targetUrl, {
-    headers: c.req.raw.headers,
-  })
-})
-
-app.get('/vpc/whoami', (c) => {
-  const url = new URL(c.req.url)
-  const targetUrl = `http://whoami${url.pathname}${url.search}`
-
-  return c.env.WHOAMI_SERVICE.fetch(targetUrl, {
-    headers: c.req.raw.headers,
-  })
-})
-
-app.get('/vpc/h2test', (c) => {
-  const url = new URL(c.req.url)
-  const targetUrl = `https://h2test-nginx-origin${url.pathname}${url.search}`
-
-  return c.env.H2TEST_NGINX.fetch(targetUrl, {
-    headers: c.req.raw.headers,
-  })
+app.all('/vpc/*', (c) => {
+  return c.env.VPC_PROXY.fetch(c.req.raw)
 })
 
 
